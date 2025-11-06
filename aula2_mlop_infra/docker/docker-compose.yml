@@ -18,8 +18,11 @@ services:
     command: ["bash", "/init-mlflow.sh"]
 
   jupyter:
-    image: jupyter/minimal-notebook:latest
+    #image: jupyter/minimal-notebook:latest
     container_name: jupyter_lab
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8888:8888"
     volumes:
@@ -30,16 +33,16 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_root=True
 
-  api:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    container_name: api_service
-    ports:
-      - "8080:8080"
-    volumes:
-      - ../artifacts:/artifacts     # Mount artifacts for model loading
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-    depends_on:
-      - mlflow
+  # api:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/Dockerfile
+  #   container_name: api_service
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - ../artifacts:/artifacts     # Mount artifacts for model loading
+  #   environment:
+  #     - MLFLOW_TRACKING_URI=http://mlflow:5000
+  #   depends_on:
+  #     - mlflow
